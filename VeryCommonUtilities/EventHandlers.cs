@@ -34,7 +34,7 @@ namespace VeryCommonUtilities
             if (plugin.Config.Inventories.TryGetValue(ev.NewRole, out Inventory inventory))
             {
                 ev.Items.Clear();
-                ev.Items.AddRange(GenerateInventory(inventory));
+                ev.Items.AddRange(inventory.Generate());
             }
 
             if (healthCoroutines.TryGetValue(ev.Player, out CoroutineHandle handle) && handle.IsRunning)
@@ -62,21 +62,6 @@ namespace VeryCommonUtilities
                 Timing.KillCoroutines(coroutineHandle);
 
             healthCoroutines.Clear();
-        }
-
-        private List<ItemType> GenerateInventory(Inventory inventory)
-        {
-            return new List<ItemType>
-            {
-                inventory.Slot1.GetOne().ItemType,
-                inventory.Slot2.GetOne().ItemType,
-                inventory.Slot3.GetOne().ItemType,
-                inventory.Slot4.GetOne().ItemType,
-                inventory.Slot5.GetOne().ItemType,
-                inventory.Slot6.GetOne().ItemType,
-                inventory.Slot7.GetOne().ItemType,
-                inventory.Slot8.GetOne().ItemType,
-            };
         }
 
         private IEnumerator<float> HealthCoroutine(Player player, int health, RoleType targetRole)

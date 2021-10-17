@@ -8,6 +8,7 @@
 namespace VeryCommonUtilities.Models
 {
     using System.Collections.Generic;
+    using VeryCommonUtilities.Extensions;
 
     public class Inventory
     {
@@ -26,5 +27,20 @@ namespace VeryCommonUtilities.Models
         public List<InventoryItem> Slot7 { get; set; } = new List<InventoryItem>();
 
         public List<InventoryItem> Slot8 { get; set; } = new List<InventoryItem>();
+
+        public List<ItemType> Generate()
+        {
+            return new List<ItemType>
+            {
+                Slot1.GetOne().ItemType,
+                Slot2.GetOne().ItemType,
+                Slot3.GetOne().ItemType,
+                Slot4.GetOne().ItemType,
+                Slot5.GetOne().ItemType,
+                Slot6.GetOne().ItemType,
+                Slot7.GetOne().ItemType,
+                Slot8.GetOne().ItemType,
+            };
+        }
     }
 }
