@@ -7,8 +7,8 @@
 
 namespace VeryCommonUtilities.Models
 {
+    using System;
     using System.Collections.Generic;
-    using VeryCommonUtilities.Extensions;
 
     public class Inventory
     {
@@ -28,19 +28,32 @@ namespace VeryCommonUtilities.Models
 
         public List<InventoryItem> Slot8 { get; set; } = new List<InventoryItem>();
 
-        public List<ItemType> Generate()
+        public IEnumerable<InventoryItem> this[int i]
         {
-            return new List<ItemType>
+            get
             {
-                Slot1.GetOne().ItemType,
-                Slot2.GetOne().ItemType,
-                Slot3.GetOne().ItemType,
-                Slot4.GetOne().ItemType,
-                Slot5.GetOne().ItemType,
-                Slot6.GetOne().ItemType,
-                Slot7.GetOne().ItemType,
-                Slot8.GetOne().ItemType,
-            };
+                switch (i)
+                {
+                    case 0:
+                        return Slot1;
+                    case 1:
+                        return Slot2;
+                    case 2:
+                        return Slot3;
+                    case 3:
+                        return Slot4;
+                    case 4:
+                        return Slot5;
+                    case 5:
+                        return Slot6;
+                    case 6:
+                        return Slot7;
+                    case 7:
+                        return Slot8;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         }
     }
 }
