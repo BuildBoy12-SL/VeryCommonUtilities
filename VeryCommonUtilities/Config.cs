@@ -129,7 +129,7 @@ namespace VeryCommonUtilities
             {
                 Slot1 = new List<InventoryItem>
                 {
-                    new InventoryItem(ItemType.KeycardNTFLieutenant, 100),
+                    new InventoryItem(ItemType.KeycardNTFCommander, 100),
                 },
                 Slot2 = new List<InventoryItem>
                 {
