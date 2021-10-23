@@ -9,9 +9,9 @@ namespace VeryCommonUtilities
 {
     using System.Collections.Generic;
     using Exiled.API.Features;
+    using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs;
     using MEC;
-    using VeryCommonUtilities.Extensions;
     using VeryCommonUtilities.Models;
 
     /// <summary>
@@ -37,6 +37,7 @@ namespace VeryCommonUtilities
                 ev.Items.AddRange(Generate(inventory));
             }
 
+            Timing.RunCoroutine(VerifyWeaponAmmo(ev));
             if (healthCoroutines.TryGetValue(ev.Player, out CoroutineHandle handle) && handle.IsRunning)
             {
                 Timing.KillCoroutines(handle);
@@ -45,7 +46,7 @@ namespace VeryCommonUtilities
 
             if (plugin.Config.StartingHealth.TryGetValue(ev.NewRole, out int health))
             {
-                healthCoroutines[ev.Player] = Timing.RunCoroutine(HealthCoroutine(ev.Player, health, ev.Player.Role), Segment.FixedUpdate);
+                healthCoroutines[ev.Player] = Timing.RunCoroutine(HealthCoroutine(ev.Player, health, ev.NewRole), Segment.FixedUpdate);
             }
         }
 
@@ -62,6 +63,16 @@ namespace VeryCommonUtilities
                 Timing.KillCoroutines(coroutineHandle);
 
             healthCoroutines.Clear();
+        }
+
+        private IEnumerator<float> VerifyWeaponAmmo(ChangingRoleEventArgs ev)
+        {
+            yield return Timing.WaitUntilTrue(() => ev.Player.Role == ev.NewRole);
+            foreach (Item item in ev.Player.Items)
+            {
+                if (item is Firearm firearm)
+                    firearm.Ammo = firearm.MaxAmmo;
+            }
         }
 
         private IEnumerable<ItemType> Generate(Inventory inventory)
