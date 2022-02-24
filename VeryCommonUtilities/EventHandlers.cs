@@ -12,6 +12,7 @@ namespace VeryCommonUtilities
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs;
     using MEC;
+    using VeryCommonUtilities.Extensions;
     using VeryCommonUtilities.Models;
 
     /// <summary>
@@ -83,16 +84,7 @@ namespace VeryCommonUtilities
                 if (slot == null)
                     continue;
 
-                foreach (var item in slot)
-                {
-                    if (item.Chance > Exiled.Loader.Loader.Random.Next(100))
-                    {
-                        yield return item.ItemType;
-                        break;
-                    }
-                }
-
-                yield return ItemType.None;
+                yield return slot.GetOne().ItemType;
             }
         }
 
