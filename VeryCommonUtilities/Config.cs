@@ -21,7 +21,7 @@ namespace VeryCommonUtilities
         /// <summary>
         /// Gets or sets the broadcast to display to a player when they join.
         /// </summary>
-        public Broadcast JoinBroadcast { get; set; } = new Broadcast("<size=25%>Welcome to...</size>\n<size=50%><b><color=red>The Redd Room</color></b></size>\n<size=15%><i>Heavily Modded Madness</i></size>", 8);
+        public Broadcast JoinBroadcast { get; set; } = new Broadcast("Welcome to the Bone Zone", 8);
 
         /// <summary>
         /// Gets or sets a collection of all health values.

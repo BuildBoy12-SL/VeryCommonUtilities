@@ -7,8 +7,13 @@
 
 namespace VeryCommonUtilities.Models
 {
+    using System;
     using UnityEngine;
 
+    /// <summary>
+    /// Represents an item that has a chance to be inserted into a player's inventory.
+    /// </summary>
+    [Serializable]
     public class InventoryItem
     {
         private int chance;
