@@ -66,7 +66,7 @@ namespace VeryCommonUtilities
             healthCoroutines.Clear();
         }
 
-        private IEnumerator<float> VerifyWeaponAmmo(ChangingRoleEventArgs ev)
+        private static IEnumerator<float> VerifyWeaponAmmo(ChangingRoleEventArgs ev)
         {
             yield return Timing.WaitUntilTrue(() => ev.Player.Role == ev.NewRole);
             foreach (Item item in ev.Player.Items)
@@ -76,15 +76,15 @@ namespace VeryCommonUtilities
             }
         }
 
-        private IEnumerable<ItemType> Generate(Inventory inventory)
+        private static IEnumerable<ItemType> Generate(Inventory inventory)
         {
             for (int i = 0; i < 8; i++)
             {
-                IEnumerable<InventoryItem> slot = inventory[i];
-                if (slot == null)
+                InventoryItem item = inventory[i]?.GetOne();
+                if (item == null)
                     continue;
 
-                yield return slot.GetOne().ItemType;
+                yield return item.ItemType;
             }
         }
 
