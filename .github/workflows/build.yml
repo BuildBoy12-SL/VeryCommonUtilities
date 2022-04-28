@@ -1,4 +1,4 @@
-name: ScpSpeech CI
+name: VeryCommonUtilities CI
 on: [push, pull_request]
 
 jobs:
@@ -43,4 +43,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Build Results
-        path: ScpSpeech/bin/Release
+        path: VeryCommonUtilities/bin/Release

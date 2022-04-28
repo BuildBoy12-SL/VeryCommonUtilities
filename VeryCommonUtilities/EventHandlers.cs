@@ -7,12 +7,9 @@
 
 namespace VeryCommonUtilities
 {
-    using System.Collections.Generic;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs;
-    using MEC;
-    using VeryCommonUtilities.Extensions;
     using VeryCommonUtilities.Models;
 
     /// <summary>
@@ -20,7 +17,6 @@ namespace VeryCommonUtilities
     /// </summary>
     public class EventHandlers
     {
-        private readonly Dictionary<Player, CoroutineHandle> healthCoroutines = new Dictionary<Player, CoroutineHandle>();
         private readonly Plugin plugin;
 
         /// <summary>
@@ -35,19 +31,7 @@ namespace VeryCommonUtilities
             if (plugin.Config.Inventories.TryGetValue(ev.NewRole, out Inventory inventory))
             {
                 ev.Items.Clear();
-                ev.Items.AddRange(Generate(inventory));
-            }
-
-            Timing.RunCoroutine(VerifyWeaponAmmo(ev));
-            if (healthCoroutines.TryGetValue(ev.Player, out CoroutineHandle handle) && handle.IsRunning)
-            {
-                Timing.KillCoroutines(handle);
-                healthCoroutines.Remove(ev.Player);
-            }
-
-            if (plugin.Config.StartingHealth.TryGetValue(ev.NewRole, out int health))
-            {
-                healthCoroutines[ev.Player] = Timing.RunCoroutine(HealthCoroutine(ev.Player, health, ev.NewRole), Segment.FixedUpdate);
+                ev.Items.AddRange(inventory.Generate());
             }
         }
 
@@ -57,50 +41,18 @@ namespace VeryCommonUtilities
             ev.Player?.Broadcast(plugin.Config.JoinBroadcast);
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnWaitingForPlayers"/>
-        public void OnWaitingForPlayers()
+        /// <inheritdoc cref="PlayerMovementSync.OnPlayerSpawned"/>
+        public void OnPlayerSpawned(ReferenceHub referenceHub)
         {
-            foreach (var coroutineHandle in healthCoroutines.Values)
-                Timing.KillCoroutines(coroutineHandle);
+            Player player = Player.Get(referenceHub);
+            if (plugin.Config.StartingHealth.TryGetValue(player.Role.Type, out int health))
+                player.Health = player.MaxHealth = health;
 
-            healthCoroutines.Clear();
-        }
-
-        private static IEnumerator<float> VerifyWeaponAmmo(ChangingRoleEventArgs ev)
-        {
-            yield return Timing.WaitUntilTrue(() => ev.Player.Role == ev.NewRole);
-            foreach (Item item in ev.Player.Items)
+            foreach (Item item in player.Items)
             {
                 if (item is Firearm firearm)
                     firearm.Ammo = firearm.MaxAmmo;
             }
-        }
-
-        private static IEnumerable<ItemType> Generate(Inventory inventory)
-        {
-            for (int i = 0; i < 8; i++)
-            {
-                InventoryItem item = inventory[i]?.GetOne();
-                if (item == null)
-                    continue;
-
-                yield return item.ItemType;
-            }
-        }
-
-        private IEnumerator<float> HealthCoroutine(Player player, int health, RoleType targetRole)
-        {
-            yield return Timing.WaitForSeconds(1f);
-            if (player == null || player.SessionVariables.ContainsKey("IsScp035") || player.SessionVariables.ContainsKey("IsNPC"))
-                yield break;
-
-            if (Round.ElapsedTime.TotalSeconds < 10)
-                yield return Timing.WaitForSeconds(10f - (float)Round.ElapsedTime.TotalSeconds);
-
-            if (targetRole == player.Role)
-                player.Health = player.MaxHealth = health;
-
-            healthCoroutines.Remove(player);
         }
     }
 }

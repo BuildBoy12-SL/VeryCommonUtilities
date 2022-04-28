@@ -9,6 +9,7 @@ namespace VeryCommonUtilities.Models
 {
     using System;
     using System.Collections.Generic;
+    using VeryCommonUtilities.Extensions;
 
     /// <summary>
     /// Represents a player's inventory.
@@ -84,6 +85,22 @@ namespace VeryCommonUtilities.Models
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i), "An inventory has eight elements.");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Generates an inventory set from the <see cref="InventoryItem"/>s.
+        /// </summary>
+        /// <returns>The collection of <see cref="ItemType"/>s that were selected.</returns>
+        public IEnumerable<ItemType> Generate()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                InventoryItem item = this[i]?.GetOne();
+                if (item == null)
+                    continue;
+
+                yield return item.ItemType;
             }
         }
     }

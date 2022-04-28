@@ -22,7 +22,13 @@ namespace VeryCommonUtilities
         public override string Author => "Build";
 
         /// <inheritdoc />
-        public override Version RequiredExiledVersion { get; } = new Version(5, 0, 0);
+        public override string Name => "VeryCommonUtilities";
+
+        /// <inheritdoc />
+        public override string Prefix => "VeryCommonUtilities";
+
+        /// <inheritdoc />
+        public override Version RequiredExiledVersion { get; } = new Version(5, 1, 3);
 
         /// <inheritdoc />
         public override void OnEnabled()
@@ -30,7 +36,7 @@ namespace VeryCommonUtilities
             eventHandlers = new EventHandlers(this);
             Exiled.Events.Handlers.Player.ChangingRole += eventHandlers.OnChangingRole;
             Exiled.Events.Handlers.Player.Verified += eventHandlers.OnVerified;
-            Exiled.Events.Handlers.Server.WaitingForPlayers += eventHandlers.OnWaitingForPlayers;
+            PlayerMovementSync.OnPlayerSpawned += eventHandlers.OnPlayerSpawned;
             base.OnEnabled();
         }
 
@@ -39,7 +45,7 @@ namespace VeryCommonUtilities
         {
             Exiled.Events.Handlers.Player.ChangingRole -= eventHandlers.OnChangingRole;
             Exiled.Events.Handlers.Player.Verified -= eventHandlers.OnVerified;
-            Exiled.Events.Handlers.Server.WaitingForPlayers -= eventHandlers.OnWaitingForPlayers;
+            PlayerMovementSync.OnPlayerSpawned -= eventHandlers.OnPlayerSpawned;
             eventHandlers = null;
             base.OnDisabled();
         }
