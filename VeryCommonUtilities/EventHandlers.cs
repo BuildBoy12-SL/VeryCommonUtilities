@@ -8,7 +8,6 @@
 namespace VeryCommonUtilities
 {
     using Exiled.API.Features;
-    using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs;
     using VeryCommonUtilities.Models;
 
@@ -28,17 +27,17 @@ namespace VeryCommonUtilities
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnChangingRole(ChangingRoleEventArgs)"/>
         public void OnChangingRole(ChangingRoleEventArgs ev)
         {
-            if (plugin.Config.Inventories.TryGetValue(ev.NewRole, out Inventory inventory))
-            {
-                ev.Items.Clear();
-                ev.Items.AddRange(inventory.Generate());
-            }
+            if (!plugin.Config.Inventories.TryGetValue(ev.NewRole, out Inventory inventory) || inventory is null)
+                return;
+
+            ev.Items.Clear();
+            ev.Items.AddRange(inventory.Generate());
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnVerified(VerifiedEventArgs)"/>
         public void OnVerified(VerifiedEventArgs ev)
         {
-            ev.Player?.Broadcast(plugin.Config.JoinBroadcast);
+            ev.Player.Broadcast(plugin.Config.JoinBroadcast);
         }
 
         /// <inheritdoc cref="PlayerMovementSync.OnPlayerSpawned"/>
@@ -47,12 +46,6 @@ namespace VeryCommonUtilities
             Player player = Player.Get(referenceHub);
             if (plugin.Config.StartingHealth.TryGetValue(player.Role.Type, out int health))
                 player.Health = player.MaxHealth = health;
-
-            foreach (Item item in player.Items)
-            {
-                if (item is Firearm firearm)
-                    firearm.Ammo = firearm.MaxAmmo;
-            }
         }
     }
 }

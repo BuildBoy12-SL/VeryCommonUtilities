@@ -28,7 +28,7 @@ namespace VeryCommonUtilities
         public override string Prefix => "VeryCommonUtilities";
 
         /// <inheritdoc />
-        public override Version RequiredExiledVersion { get; } = new Version(5, 1, 3);
+        public override Version RequiredExiledVersion { get; } = new Version(5, 2, 1);
 
         /// <inheritdoc />
         public override void OnEnabled()
